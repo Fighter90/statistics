@@ -11,7 +11,12 @@ class Index extends Base
         parent::inputSource();
         $clientHref = Client::getInstance();
         $dates = $clientHref->getDates();
-        $countDays = !empty($_POST['days']) ? (int)$_POST['days'] : self::DEFAULT_PERIOD;
+        $countDays = self::DEFAULT_PERIOD;
+
+        if (isset($_POST['days'])) {
+            $countDays = (int)$_POST['days'];
+            $countDays = $countDays > 0 ? $countDays : self::DEFAULT_PERIOD;
+        }
         $periods = $this->calcDates($dates, $countDays);
         $this->params['dataRegistered'] = $periods ? $clientHref->getCountByPeriods($periods, true) : array();
         $this->params['dataAll'] = $periods ? $clientHref->getCountByPeriods($periods) : array();
